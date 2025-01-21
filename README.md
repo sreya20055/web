@@ -1,1 +1,1 @@
-Journey to being a Full Stack Web Developer
+🚀 Journey to being a Full Stack Web Developer
