@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Resume</title>
+        <link rel="stylesheet" href="./style.css" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="container">
+            <h1>SREYA V</h1>
+            <div class="profile-section">
+                <img src="./photo1.jpg" height="150" width="150" alt="profile photo" class="profile-img"/>
+            
+                <!-- Dropdown Menu -->
+                <div class="dropdown-container">
+                    <div class="dropdown">
+                        <button onclick="toggleDropdown('contact')" class="dropbtn">Contact Details</button>
+                        <div id="contact" class="dropdown-content">
+                            <!-- Contact content will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <button onclick="toggleDropdown('details')" class="dropbtn">Personal Details</button>
+                        <div id="details" class="dropdown-content">
+                            <!-- Details content will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <button onclick="toggleDropdown('experience')" class="dropbtn">Experience</button>
+                        <div id="experience" class="dropdown-content">
+                            <!-- Experience content will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <button onclick="toggleDropdown('project')" class="dropbtn">Projects</button>
+                        <div id="project" class="dropdown-content">
+                            <!-- Project content will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr/>
+            <h2>Websites, portfolios and profiles</h2>
+            <ul>
+                <li><a href="https://www.linkedin.com/in/sreya-v-7b96a931a/" target="_blank" rel="noopener noreferrer">LinkedIn Profile</a></li>
+                <li><a href="https://github.com/sreya20055" target="_blank" rel="noopener noreferrer">GitHub Profile</a></li>
+            </ul>
+
+            <hr/>
+            <h2>Skills</h2>
+            <ul>
+                <li>C</li>
+                <li>Matlab</li>
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JavaScript</li>
+                <li>Fusion 360</li>
+            </ul>
+
+            <h2>Professional Summary</h2>
+            <p>An aspiring engineer striving for academic excellence and actively looking for opportunities
+                to upskill and grow. Effective in communication and team player. Currently learning full
+                stack web development</p>
+
+            <hr/>
+            <h2>Education</h2>
+            <div class="education-section">
+                <h4>Mar Athanasius College Of Engineering - Kothamangalam, Kerala | BTech</h4>
+                <p>Electronics and Communication, Expected in 07/2027</p>
+                <ul>
+                    <li>S1 SGPA - 9.15</li>
+                    <li>S2 SGPA - 9.11</li>
+                    <li>GPA: 9.13</li>
+                </ul>
+
+                <h4>GHSS Pakkam, Bekal Fort, Kanhangad | XII</h4>
+                <p>06/2023<br/>
+                    GPA: 99%</p>
+
+                <h4>GHSS Pakkam, Bekal Fort, Kanhangad | X</h4>
+                <p>06/2021<br/>
+                    GPA: Full A+</p>
+            </div>
+
+            <hr/>
+            <h2>Languages</h2>
+            <ul>
+                <li>English</li>
+                <li>Malayalam</li>
+                <li>Hindi</li>
+            </ul>
+
+            <hr/>
+            <h2>Declaration</h2>
+            <p>I hereby declare that the information provided above is true and correct to the best of my
+                knowledge and belief.</p>
+
+            <footer>
+                <small>
+                    <p>Sreya, Copyright © 2024. All Rights Reserved.</p>
+                </small>
+            </footer>
+        </div>
+
+        <script>
+            // Initialize state for dropdowns
+            let currentOpenDropdown = null;
+            const loadedContent = new Set();
+
+            // Function to load content with improved error handling
+            async function loadContent(file, dropdownId) {
+                if (loadedContent.has(dropdownId)) return;
+
+                try {
+                    const response = await fetch(file + '.html');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const text = await response.text();
+                    const temp = document.createElement('div');
+                    temp.innerHTML = text;
+                    
+                    // Get content and clean it up
+                    const content = temp.querySelector('body') ? 
+                        temp.querySelector('body').innerHTML : text;
+                    
+                    document.getElementById(dropdownId).innerHTML = content;
+                    loadedContent.add(dropdownId);
+                } catch (error) {
+                    console.error('Error loading content:', error);
+                    document.getElementById(dropdownId).innerHTML = `
+                        <div class="error-message">
+                            <p>Unable to load content. Please try again later.</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // Improved toggle function with loading indicator
+            function toggleDropdown(dropdownId) {
+                const dropdown = document.getElementById(dropdownId);
+                
+                // Show loading indicator if content hasn't been loaded
+                if (!loadedContent.has(dropdownId)) {
+                    dropdown.innerHTML = '<div class="loading">Loading...</div>';
+                }
+
+                // Handle current dropdown state
+                if (currentOpenDropdown === dropdown) {
+                    dropdown.classList.remove('show');
+                    currentOpenDropdown = null;
+                    return;
+                }
+
+                // Close any open dropdown
+                if (currentOpenDropdown) {
+                    currentOpenDropdown.classList.remove('show');
+                }
+
+                // Open new dropdown and load content
+                dropdown.classList.add('show');
+                currentOpenDropdown = dropdown;
+                loadContent(dropdownId, dropdownId);
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.matches('.dropbtn')) {
+                    if (currentOpenDropdown) {
+                        currentOpenDropdown.classList.remove('show');
+                        currentOpenDropdown = null;
+                    }
+                }
+            });
+
+            // Prevent dropdown close when clicking inside dropdown content
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.dropdown-content').forEach(content => {
+                    content.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
